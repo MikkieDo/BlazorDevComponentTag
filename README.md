@@ -111,12 +111,13 @@ At the top of your component:
 
 ```razor
  <DevComponentTag Name="@ActualComponentName" />
-```
-in your code
+ @code{
  private string ActualComponentName =>
         ChildContent?.Target?.GetType().Name ?? "Unknown";
-
+}
 ---
+```
+
 
 ## Done!
 

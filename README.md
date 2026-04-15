@@ -1,51 +1,35 @@
-# Blazor Dev-Only Component Name Tag (DEBUG-Only Overlay)
-
-A tiny, automatic way to show component names during development — without ever exposing them to end users.
-
----
-
-## Why This Exists
-
-If you’ve ever worked on a large Blazor application, you’ve probably asked yourself:
-
-**“What component am I looking at right now?”**
-
-Blazor doesn’t include built-in dev tools like React, Vue, or Angular that show component names in the UI.  
-So developers often:
-
-- guess  
-- dig through markup  
-- sprinkle temporary labels  
-- or add debug text manually (and forget to remove it)
-
-This pattern solves that problem **cleanly, automatically, and safely**.
+# Blazor Dev Component Tag  
+A tiny, zero‑overhead developer helper that shows the name of the currently rendered component in the top‑right corner — **only in DEBUG mode**.  
+Perfect for large Blazor apps where it’s easy to lose track of which component is rendering what.
 
 ---
 
-## What It Does
+## Features
 
-This adds a small, faint component name tag to the corner of every page/component — but **only in DEBUG builds**.
-
-- Developers see it  
-- End users never see it  
-- No hover tricks  
-- No login checks  
-- No duplication  
-- No markup inside components  
-- No risk of leaking into production  
-
-It’s a **zero-maintenance**, **zero-risk**, **developer-only** diagnostic tool.
+- Shows the component name during development  
+- Automatically disappears in Release/Production  
+- No JavaScript  
+- No configuration  
+- No performance impact  
+- Works in Blazor Server and WebAssembly  
+- Drop‑in, copy‑paste friendly
 
 ---
 
-## How It Works
+## Installation
 
-### 1. Create a base class
+You can add this feature to any Blazor project in a few minutes.
+
+---
+
+## 1. Add the base class
+
+Create a file named `DevComponentBase.cs`:
 
 ```csharp
 using Microsoft.AspNetCore.Components;
 
-namespace YourApp.Components
+namespace YourProjectName.SystemFileHelpers
 {
     public class DevComponentBase : ComponentBase
     {
@@ -57,4 +41,83 @@ namespace YourApp.Components
 #endif
     }
 }
+```
+
+---
+
+## 2. Add the tag component
+
+Create a file named `DevComponentTag.razor`:
+
+```razor
+#if DEBUG
+<div class="dev-component-tag">@Name</div>
+#endif
+
+@code {
+    [Parameter] public string Name { get; set; } = string.Empty;
+}
+```
+
+---
+
+## 3. Add the component‑scoped CSS
+
+Create a file named:
+
+```
+DevComponentTag.razor.css
+```
+
+Place it **in the same folder** as `DevComponentTag.razor`.
+
+```css
+.dev-component-tag {
+    position: absolute;
+    top: 0;
+    right: 0;
+    opacity: 0.25;
+    font-size: 0.7rem;
+    pointer-events: none;
+    z-index: 9999;
+}
+```
+
+Blazor will automatically load this file — no `<link>` tag needed.
+
+---
+
+## 4. Add the tag to your layout or wrapper
+
+In your layout or page wrapper (e.g., `ThePage.razor`):
+
+```razor
+#if DEBUG
+<DevComponentTag Name="@DevComponentName" />
+#endif
+```
+
+---
+
+## 5. Inherit the base class in any component you want labeled
+
+At the top of your component:
+
+```razor
+@using YourProjectName.SystemFileHelpers
+@inherits DevComponentBase
+```
+
+---
+
+## Done!
+
+Every component that inherits `DevComponentBase` will now display its name in the corner during development — and never in production.
+
+---
+
+## License
+
+MIT License. Free to use, modify, and share.
+
 

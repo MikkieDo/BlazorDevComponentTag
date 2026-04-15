@@ -28,17 +28,16 @@ Create a file named `DevComponentBase.cs`:
 
 ```csharp
 using Microsoft.AspNetCore.Components;
-
-namespace YourProjectName.SystemFileHelpers
+namespace Whozzplaying.SystemFileHelpers
 {
     public class DevComponentBase : ComponentBase
     {
         protected string DevComponentName =>
-#if DEBUG
-            GetType().Name;
-#else
-            string.Empty;
-#endif
+            #if DEBUG
+                        GetType().Name;
+            #else
+                        string.Empty;
+            #endif
     }
 }
 ```
@@ -50,12 +49,18 @@ namespace YourProjectName.SystemFileHelpers
 Create a file named `DevComponentTag.razor`:
 
 ```razor
-#if DEBUG
-<div class="dev-component-tag">@Name</div>
-#endif
-
+@if (IsDebug)
+{
+    <div class="dev-component-tag">@Name</div>
+}
 @code {
     [Parameter] public string Name { get; set; } = string.Empty;
+    private static bool IsDebug =>
+        #if DEBUG
+            true;
+        #else
+            false;
+        #endif
 }
 ```
 
@@ -73,12 +78,13 @@ Place it **in the same folder** as `DevComponentTag.razor`.
 
 ```css
 .dev-component-tag {
-    position: absolute;
+    position: relative;
     top: 0;
-    right: 0;
-    opacity: 0.25;
-    font-size: 0.7rem;
+    left: 0;
+    opacity: 0.85;
+    font-size: 1.3rem;
     pointer-events: none;
+    color: red;
     z-index: 9999;
 }
 ```
@@ -104,9 +110,11 @@ In your layout or page wrapper (e.g., `ThePage.razor`):
 At the top of your component:
 
 ```razor
-@using YourProjectName.SystemFileHelpers
-@inherits DevComponentBase
+ <DevComponentTag Name="@ActualComponentName" />
 ```
+in your code
+ private string ActualComponentName =>
+        ChildContent?.Target?.GetType().Name ?? "Unknown";
 
 ---
 

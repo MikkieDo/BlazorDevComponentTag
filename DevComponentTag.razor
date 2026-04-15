@@ -1,7 +1,15 @@
 @* <h3>DevComponentTag</h3> *@
-#if DEBUG
-<div class="dev-component-tag">@Name</div>
-#endif
-
+@if (IsDebug)
+{
+    <div class="dev-component-tag">@Name</div>
+}
 @code {
+    [Parameter] public string Name { get; set; } = string.Empty;
+    private static bool IsDebug =>
+        #if DEBUG
+            true;
+        #else
+            false;
+        #endif
+}
   

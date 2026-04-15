@@ -1,0 +1,10 @@
+﻿/*DevComponentTag.razor.css*/
+.dev-component-tag {
+    position: absolute;
+    top: 0;
+    right: 0;
+    opacity: 0.25;
+    font-size: 0.7rem;
+    pointer-events: none;
+    z-index: 9999;
+}
